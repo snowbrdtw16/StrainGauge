@@ -1,8 +1,9 @@
 #this program will take the voltage drop across a strain gauge and known strain values and will determine the gauge factor of the strain gauge.
 
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import pandas as pd
+from scipy import stats
 
 pd.set_option('precision', 8)
 
@@ -33,4 +34,14 @@ minresistance = resistance.min()
 delta = resistance-minresistance
 delta_R = delta/resistance
 plot_data = pd.DataFrame({'Delta R/R': delta_R,'Strain': strain1})
-print(plot_data)
+#slope, intercept, r_value, p_value, std_err = stats.linregress(strain1, delta_R)
+#print(slope)
+#print(r_value**2)
+
+plt.scatter(strain1, delta_R)
+slope, intercept = np.polyfit(strain1, delta_R, 1)
+print(slope)
+plt.plot(strain, strain*slope + intercept, 'r')
+plt.show()
+
+plt.scatter
