@@ -30,18 +30,46 @@ current = vpp1/total_resistance
 
 #Finds the resistance of the strain gauge
 resistance = voltage1/current
+#Finds the minimum resistance value
 minresistance = resistance.min()
+#Calculates the change in resistance from the 0 strain value.
 delta = resistance-minresistance
+#Calculate delta R/R
 delta_R = delta/resistance
 plot_data = pd.DataFrame({'Delta R/R': delta_R,'Strain': strain1})
-#slope, intercept, r_value, p_value, std_err = stats.linregress(strain1, delta_R)
-#print(slope)
-#print(r_value**2)
 
-plt.scatter(strain1, delta_R)
-slope, intercept = np.polyfit(strain1, delta_R, 1)
-print(slope)
+#Plot parameters used to determine the size of the graphing area.
+
+x_plot_range = strain1.max()-strain1.min()
+y_plot_range = delta_R.max()-delta_R.min()
+x_plot_min = strain1.min()
+x_plot_max = strain1.max()
+y_plot_min = delta_R.min()
+y_plot_max = delta_R.max()
+
+#Linear Regression of plotted data
+slope, intercept, r_value, p_value, std_err = stats.linregress(strain1, delta_R)
+
+#Setting axes limits
+
+print(r_value)
+plt.text(x_plot_max*0.05, y_plot_max*0.95,'Gauge Factor =', ha='left', va='top')
+plt.text(x_plot_max*0.05, y_plot_max*0.88, '$R^2$ =', ha='left', va='top')
+axes = plt.gca()
+axes.set_xlim([x_plot_min-0.05*x_plot_range, x_plot_max + 0.05*x_plot_range])
+axes.set_ylim([y_plot_min-0.05*y_plot_range, y_plot_max + 0.05*y_plot_range])
+plt.scatter(strain1, delta_R, s = 60, color = 'blue')
 plt.plot(strain, strain*slope + intercept, 'r')
-plt.show()
+plt.xlabel('Strain', fontsize = 16)
+plt.ylabel('ΔR/R', fontsize = 16)
+plt.locator_params(axis='y', nbins=6)
+plt.locator_params(axis='x', nbins=8)
+#Scatter plot settings
 
-plt.scatter
+
+plt.show()
+#plt.scatter(strain1, delta_R)
+#slope, intercept = np.polyfit(strain1, delta_R, 1)
+#print(slope)
+#plt.plot(strain, strain*slope + intercept, 'r')
+#plt.show()
