@@ -10,10 +10,10 @@ pd.set_option('precision', 8)
 
 #Load data from the .csv file.
 data = pd.read_csv('GaugeFactor_worksheet.csv')
-strain = data.iloc[0:5,0]
+strain = data.iloc[0:6,0]
 strain1 = pd.to_numeric(strain)
 #Locates the most recently added voltage drop data, on the far right.
-voltage = data.iloc[0:5,-1]
+voltage = data.iloc[0:6,-1]
 
 #Locates the Vpp used during testing.
 vpp = data.iloc[-1,-1]
@@ -52,12 +52,12 @@ slope, intercept, r_value, p_value, std_err = stats.linregress(strain1, delta_R)
 
 #Setting axes limits
 
-print(r_value)
-plt.text(x_plot_max*0.05, y_plot_max*0.95,'Gauge Factor =', ha='left', va='top')
-plt.text(x_plot_max*0.05, y_plot_max*0.88, '$R^2$ =', ha='left', va='top')
+plt.text(x_plot_max*0.05, y_plot_max*0.95,'Gauge Factor = '+ str(round(slope,2)), ha='left', va='top')
+plt.text(x_plot_max*0.05, y_plot_max*0.88, '$R^2$ = '+ str(round(r_value**2,2)), ha='left', va='top')
 axes = plt.gca()
 axes.set_xlim([x_plot_min-0.05*x_plot_range, x_plot_max + 0.05*x_plot_range])
 axes.set_ylim([y_plot_min-0.05*y_plot_range, y_plot_max + 0.05*y_plot_range])
+axes.tick_params(axis='both', which='both', direction='in', bottom=True, top=True, left=True, right=True)
 plt.scatter(strain1, delta_R, s = 60, color = 'blue')
 plt.plot(strain, strain*slope + intercept, 'r')
 plt.xlabel('Strain', fontsize = 16)
