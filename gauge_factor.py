@@ -38,26 +38,33 @@ delta = resistance-minresistance
 delta_R = delta/resistance
 plot_data = pd.DataFrame({'Delta R/R': delta_R,'Strain': strain1})
 
-#Plot parameters used to determine the size of the graphing area.
+def compute_limits(x, y, margin = 0.05):
+    x_plot_range = strain1.max()-strain1.min()
+    y_plot_range = delta_R.max()-delta_R.min()
+    
+    x_sx_lim = x.min()-margin*x_plot_range
+    x_dx_lim = x.max()+ margin*x_plot_range
+    y_sx_lim = y.min()-margin*y_plot_range
+    y_dx_lim = y.max()+ margin*y_plot_range
 
-x_plot_range = strain1.max()-strain1.min()
-y_plot_range = delta_R.max()-delta_R.min()
-x_plot_min = strain1.min()
-x_plot_max = strain1.max()
-y_plot_min = delta_R.min()
-y_plot_max = delta_R.max()
+    return x_sx_lim, x_dx_lim, y_sx_lim, y_dx_lim
+
+
 
 #Linear Regression of plotted data
 slope, intercept, r_value, p_value, std_err = stats.linregress(strain1, delta_R)
 
 #Setting axes limits
 
-plt.text(x_plot_max*0.05, y_plot_max*0.95,'Gauge Factor = '+ str(round(slope,2)), ha='left', va='top')
-plt.text(x_plot_max*0.05, y_plot_max*0.88, '$R^2$ = '+ str(round(r_value**2,2)), ha='left', va='top')
+plt.text(strain1.max()*0.05, delta_R.max()*0.95,'Gauge Factor = '+ str(round(slope,2)), ha='left', va='top')
+plt.text(strain1.max()*0.05, delta_R.max()*0.88, '$R^2$ = '+ str(round(r_value**2,2)), ha='left', va='top')
 axes = plt.gca()
-axes.set_xlim([x_plot_min-0.05*x_plot_range, x_plot_max + 0.05*x_plot_range])
-axes.set_ylim([y_plot_min-0.05*y_plot_range, y_plot_max + 0.05*y_plot_range])
-axes.tick_params(axis='both', which='both', direction='in', bottom=True, top=True, left=True, right=True)
+
+l_x_sx, l_x_dx, l_y_sx, l_y_dx = compute_limits(strain1,delta_R, margin = 0.10)
+
+axes.set_xlim([l_x_sx, l_x_dx])
+axes.set_ylim([l_y_sx, l_y_dx])
+axes.tick_params(axis='both', which='both', direction='in', bottom=True, top=True, left=True, right=True) 
 plt.scatter(strain1, delta_R, s = 60, color = 'blue')
 plt.plot(strain, strain*slope + intercept, 'r')
 plt.xlabel('Strain', fontsize = 16)
